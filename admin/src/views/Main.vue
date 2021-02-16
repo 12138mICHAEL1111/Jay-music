@@ -48,7 +48,7 @@
     color: white;
     text-align: center; 
     padding-top: 10px;
-    font-size: 40px;   
+    font-size: 45px;   
     font-family:"Times New Roman",Georgia,Serif;
     }
     .co1{
@@ -120,7 +120,7 @@ export default {
       this.items = res.data
       if(this.items.length>0){
         for(var i=0;i<this.items.length;i++){
-          console.log("x")
+          
           this.audio.push({"playing":false})
         }
       }

@@ -12,7 +12,8 @@ const routes = [
   {
     path: '/',
     name: 'main',
-    component: Main
+    component: Main,
+    
   },
   {
     path: '/musics/new',
@@ -33,7 +34,8 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component:Login
+    component:Login,
+    meta:{isPublic:true}
   }
 ]
 
@@ -41,4 +43,11 @@ const router = new VueRouter({
   routes
 })
 
+//未登录不能访问
+router.beforeEach((to,from,next)=>{
+  if(!to.meta.isPublic && !localStorage.token){
+    return next('/login')
+  }
+  next()
+})
 export default router
