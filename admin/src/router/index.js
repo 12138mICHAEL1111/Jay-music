@@ -5,7 +5,7 @@ import New from '../views/New.vue'
 import Edit from '../views/Edit.vue'
 import AdminNew from '../views/CreateAdmin.vue'
 import Login from '../views/Login.vue'
-
+import Test from '../views/test.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -36,6 +36,11 @@ const routes = [
     name: 'login',
     component:Login,
     meta:{isPublic:true}
+  },
+  {
+    path:'/test',
+    name:'test',
+    component: Test
   }
 ]
 
