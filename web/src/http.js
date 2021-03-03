@@ -31,4 +31,13 @@ Vue.config.warnHandler = function (msg) {
     }  
   }
 
+http.interceptors.request.use(function(config){
+    if(localStorage.userToken){
+      config.headers.Authorization = 'Bearer ' + (localStorage.userToken)
+    }
+    return config;
+},function(error){
+    return Promise.reject(error)
+})
+
 export default http

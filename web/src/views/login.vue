@@ -10,8 +10,9 @@
                 </el-form-item>
                 <el-form-item >
                     <el-button type="primary" native-type= "submit"> 登录 </el-button>
-                </el-form-item>
+                </el-form-item>         
             </el-form>
+            <el-button type="text" @click="$router.push('/sign-in')">没有账号？注册</el-button>
         </el-card>
     </div>
 </template>
@@ -33,11 +34,11 @@ export default {
     methods:{
         async login(){
             const res = await this.$http.post('login',this.model)
-            localStorage.token = res.data.token
+            localStorage.userToken = res.data.userToken
             this.$router.push('/')
             this.$message({
                 type: "success",
-                message: `登陆成功, 欢迎${res.data.username}`
+                message: `登陆成功, 欢迎${res.data.name}`
             })
         }
     }

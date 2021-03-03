@@ -1,20 +1,29 @@
 <template>    
     <el-container class="co1" >
         <el-header style="height:80px"> 
-          周同学音乐
-        </el-header>    
-        
+          <h1 class="title">周同学音乐</h1>
+           <div class ="avatar">
+             <el-dropdown @command="handleCommand">
+                 <el-avatar  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                 <el-dropdown-menu slot="dropdown">
+                   <el-dropdown-item command="myCollection">我的收藏</el-dropdown-item>
+                   <el-dropdown-item command="setting">个人设置</el-dropdown-item>
+                   <el-dropdown-item command="logoff" v-show="userToken">注销</el-dropdown-item>
+                 </el-dropdown-menu>                      
+             </el-dropdown>
+          </div>  
+        </el-header>      
         <el-main >
           <div class="playListButton">
              <el-button  type="primary" @click="playMusicList()" icon="el-icon-video-play">播放歌单</el-button>
-          </div>    
-            <el-row :gutter="190" v-for="(item, i) in items" :key=i >    
-              <el-col :span="12" :offset="7" >
+          </div>  
+            <el-row type="flex" class="row-bg" justify="center" align="middle" v-for="(item, i) in items" :key=i style="margin-top:20px">    
+              <el-col :span="9" >
                 <div class="musicList" > 
                     <el-link href="#/test" class="musicLink" style="font-size:18px"><strong> {{item.name}}  ——《 {{item.album}} 》</strong></el-link>                      
                     <div class="inButton">
-                      <el-button icon="el-icon-caret-right" circle type="primary" @click="startPlayOrPause(i)"></el-button>
-                      <el-button :icon="iconTypeArray[i]" circle type="primary" @click="likeOrDislike(i)" ref="iconType"></el-button>
+                      <el-button icon="el-icon-caret-right" circle type="primary" @click="playSingle(i)"></el-button>
+                      <el-button :icon="iconTypeArray[i]" circle type="primary" @click="likeOrDislike(i)" ref="iconType" ></el-button>
                     </div>                   
                 </div>
                </el-col>          
@@ -46,8 +55,8 @@
                         trigger="click"
                       >
                       <ul>
-                        <li v-for="(item, i) in items" :key=i>
-                          {{item.name}}
+                        <li v-for="(item, i) in playList" :key=i>
+                          {{item.musicName}}
                         </li>
                       </ul>
                         <template #reference>
@@ -73,14 +82,23 @@
     margin-left:10px
   }
   .playListButton{
-    margin-bottom: 25px;
-    margin-left: 30%
+  
+    margin-left: 32%
   }
-  .el-main{
-    margin-top:-60px;
+  .avatar{
+    position: absolute;
+    margin-left:80%;
+    margin-top:-85px
   }
   .MusicWidgets{
      display: flex;
+  }
+  .title{
+    color: white;
+    text-align: center; 
+    font-size: 45px;   
+    font-family:"Times New Roman",Georgia,Serif;
+    margin-top: 30px;
   }
   .musicText{
     font-size:17px;
@@ -105,19 +123,13 @@
     height: 100%;
   }
   .el-header {
-    margin-top: 30px;
-    color: white;
-    text-align: center; 
     padding-top: 10px;
-    font-size: 45px;   
-    font-family:"Times New Roman",Georgia,Serif;
     }
     .co1{
      background-color: #f1939c;
      min-height: 100vh;    
     }
-    .playBar{   
-      
+    .playBar{        
       border-radius: 100px;
       min-height: 50px;
       
@@ -154,12 +166,13 @@
 </style>
 
 <script>
+  
   export default {
-
+    inject:['reload'],
     data(){
     return{
+      userToken:"",
       items:[],
-      audio:[{}],
       iconTypeArray:[],
       play:true,
       showPlayBar:false,
@@ -194,15 +207,15 @@
     playMusicList(){
       this.play = true
       this.showPlayBar=true
+      this.playList.splice(0,this.playList.length)
       for(var i =0;i<this.items.length;i++){
         var name = this.items[i].name
         var address = this.items[i].musicAddress
-        this.playList.push({"musicName":name,"address":address})
-      }
+        this.playList.push({"musicName":name,"address":address})     
+        }     
       this.$refs.audio.src=this.playList[0].address
       this.$refs.audio.play()
-      this.currentMusicName = this.playList[0].musicName
-      
+      this.currentMusicName = this.playList[0].musicName     
     },
     switchPlayStatus(){
         if(this.play==true){
@@ -216,7 +229,15 @@
       },   
     likeOrDislike(i){
       //喜欢
-      if(this.iconTypeArray[i]=='el-icon-star-off'){
+      if(!localStorage.userToken){
+        this.$router.push("/login")
+        this.$message({
+              type:'warning',
+              message:"请先登录"
+        })
+      }
+      else{
+        if(this.iconTypeArray[i]=='el-icon-star-off'){
         this.iconTypeArray[i]='el-icon-star-on'
         this.$refs.iconType[i].icon = 'el-icon-star-on'
         this.$message({
@@ -232,6 +253,23 @@
               type:'error',
               message:"取消收藏"
           })
+      }
+      }
+    },
+    handleCommand(command){
+      if(command == "myCollection"){
+        this.$router.push('/my-music')
+      }
+      else if(command == "setting"){
+        this.$router.push('/my-profile')
+      }
+      else if(command == "logoff"){
+        localStorage.clear()
+        this.$message({
+              type:'success',
+              message:"注销成功"
+          })
+        this.reload();
       }
     },
      onTimeUpdate(res){
@@ -302,24 +340,23 @@
         this.$refs.audio.play()
         this.currentMusicName = this.playList[index].musicName
     },  
-     startPlayOrPause(i){     
-      this.showPlayBar=true
-       //只允许播放一首
-      for(var x =0;x<this.audio.length;x++){
-        if(this.audio[x].playing==true){
-          this.$refs.audio[x].pause()  
+    playSingle(i){
+      this.play = true
+      this.showPlayBar = true
+      this.currentMusicName = this.items[i].name
+      var flag  = false
+      for(var x =0; x<this.playList.length;x++){
+        if(this.playList[x].address == this.items[i].musicAddress){
+          flag = true
+          break
         }
-      }  
-      if(this.audio[i].playing){      
-        this.$refs.audio[i].pause()
-        this.audio[i].playing = false
-        this.play=false
       }
-      else{     
-        this.$refs.audio[i].play()
-        this.audio[i].playing = true
-        this.play=true
+      if(flag == false){
+        var address = this.items[i].musicAddress
+        this.playList.push({"musicName":this.currentMusicName,"address":address})
       }
+      this.$refs.audio.src = this.items[i].musicAddress
+      this.$refs.audio.play()
     },
     onLoadedmetadata(res) {  
       var totalSecond = parseInt(res.target.duration)
@@ -336,10 +373,10 @@
     },
     async fetch(){
       const res = await this.$http.get('/musics')
+      this.userToken = localStorage.userToken
       this.items = res.data
       if(this.items.length>0){
         for(var i=0;i<this.items.length;i++){
-          this.audio.push({"playing":false})
           //待修改
           this.iconTypeArray.push('el-icon-star-off')
         }
