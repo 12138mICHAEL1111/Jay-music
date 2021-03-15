@@ -35,6 +35,8 @@ export default {
         async login(){
             const res = await this.$http.post('login',this.model)
             localStorage.userToken = res.data.userToken
+            localStorage.id = res.data.id
+    
             this.$router.push('/')
             this.$message({
                 type: "success",

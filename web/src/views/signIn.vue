@@ -56,7 +56,7 @@ export default {
                     else{
                         const res = await this.$http.post('signIn',this.model)
                         localStorage.userToken = res.data.userToken
-                        localStorage.userName = res.data.name
+                        localStorage.id = res.data.id
                         this.$router.push('/')
                         this.$message({
                             type: "success",

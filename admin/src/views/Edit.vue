@@ -9,9 +9,6 @@
                 <el-form-item label="专辑名称" style="width:500px">
                     <el-input v-model="model.album"></el-input>
                 </el-form-item>
-                <el-form-item label="歌曲简介" style="width:500px">
-                    <el-input v-model="model.description"></el-input>
-                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" native-type="submit">上传</el-button>
                 </el-form-item>

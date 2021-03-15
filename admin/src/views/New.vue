@@ -9,9 +9,6 @@
                 <el-form-item label="专辑名称" style="width:500px" prop="album"> 
                     <el-input v-model="model.album"></el-input>
                 </el-form-item>
-                <el-form-item label="歌曲简介" style="width:500px">
-                    <el-input v-model="model.description"></el-input>
-                </el-form-item>
                 <el-upload
                     class="upload"                  
                     :action="$http.defaults.baseURL + '/upload'"       
@@ -63,7 +60,7 @@ export default {
             this.filename = res.filename
         },   
         async handleRemove(){
-            this.$http.delete(`/deleteuploadmusic/${this.filename}`)
+            this.$http.delete(`/deleteuploadavatar/${this.filename}`)
         },
         save(){   
             this.$refs['musicForm'].validate(async (valid)=>{

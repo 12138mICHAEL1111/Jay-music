@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from '../views/Main.vue'
-import Test from '../views/Test.vue'
 import Login from '../views/login.vue'
 import myMusic from '../views/myMusic.vue'
 import signIn from '../views/signIn.vue'
@@ -13,12 +12,7 @@ const routes = [
     path: '/',
     name: 'Main',
     component: Main,
-    meta:{isPublic:true}
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: Test
+    meta:{isPublic:true,keepAlive:true}
   },
   {
     path:'/login',
@@ -27,9 +21,10 @@ const routes = [
     meta:{isPublic:true}
   },
   {
-    path:'/my-music',
+    path:'/my-music/:id',
     name:'my-music',
     component: myMusic,
+    meta:{isPublic:false,keepAlive:true}
   },
   {
     path:'/sign-in',
@@ -38,8 +33,9 @@ const routes = [
     meta:{isPublic:true}
   },
   {
-    path:'/my-profile',
-    name:'profile',
+    path:'/my-profile/edit/:id',
+    name:'myProfile',
+    props: true,
     component: myProfile,
   }
 ]
