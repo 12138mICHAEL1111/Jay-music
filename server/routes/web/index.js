@@ -23,12 +23,10 @@ module.exports = app =>{
         const findUser = await User.findOne({username:req.body.username})
         assert(!findUser,422,"用户名已被注册")      
         const model = await User.create(req.body)
-        const username = req.body.username
-        const currentUser = await User.find({username})
         const token = jwt.sign({
-            id: currentUser._id
+            id: model._id
         }, app.get('secret'))
-        const object = {"userToken": token,"name":username,"id":currentUser._id}
+        const object = {"userToken": token,"name":model.username,"id":model._id}
          res.send(object)
     })
 
