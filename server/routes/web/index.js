@@ -16,7 +16,7 @@ module.exports = app =>{
 
     router.post("/avatar",async(req,res)=>{
         const user = await User.findById(req.body.id)
-        res.send(user)
+        res.send({"avataraddress": user.avataraddress})
     })
 
     router.post('/signIn',async(req,res)=>{
