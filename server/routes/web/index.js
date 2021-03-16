@@ -16,7 +16,13 @@ module.exports = app =>{
 
     router.post("/avatar",async(req,res)=>{
         const user = await User.findById(req.body.id)
-        res.send({"avataraddress": user.avataraddress})
+        if(user){
+            res.send({"avataraddress": user.avataraddress})
+        }
+        else{
+            res.sendStatus(200)
+        }
+       
     })
 
     router.post('/signIn',async(req,res)=>{
